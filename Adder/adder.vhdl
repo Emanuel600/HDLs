@@ -2,7 +2,7 @@
 --! @file main.cpp
 --! @author Emanuel S Araldi
 --! @brief Adds two 8-bit numbers together
---! @version 0.1
+--! @version 0.2
 --! @date 2025-03-29
 --!
 --! @copyright Copyright (c) 2025
@@ -14,11 +14,19 @@ use ieee.numeric_std.all;
 
 --! @brief Somador simples sem carry
 --!
---! @port in a:
+--! @param a        8-bit Input, unsigned number
+--! @param b        8-bit Input, unsigned number
+--! @param s        8-bit Output, unsigned number equals a+b
+--!
+
 entity adder is
+    generic(
+        SIZE : INTEGER := 8             --!< Tamanho definido aqui para facilitar futuras alterações >
+    );
+
     port(
-        a, b : in std_logic_vector(7 downto 0); --!< Vetores de entrada com 8 bits
-        s    : out std_logic_vector(7 downto 0) --!< Vetor de saída com 8 bits
+        a, b : in  UNSIGNED(SIZE - 1 downto 0); --!< Vetores de entrada com 8 bits >
+        s    : out UNSIGNED(SIZE - 1 downto 0) --!< Vetor de saída com 8 bits >
     );
 end entity adder;
 
