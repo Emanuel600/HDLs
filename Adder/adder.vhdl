@@ -14,9 +14,11 @@ use ieee.numeric_std.all;
 
 --! @brief Somador simples sem carry
 --!
---! @param a        8-bit Input, unsigned number
---! @param b        8-bit Input, unsigned number
---! @param s        8-bit Output, unsigned number equals a+b
+--! @param SIZE     GENERIC constant, in/output size
+--!
+--! @param a        *SIZE*-bit Input, unsigned number
+--! @param b        *SIZE*-bit Input, unsigned number
+--! @param s        *SIZE*-bit Output, unsigned number equals a+b
 --!
 
 entity adder is
@@ -25,8 +27,8 @@ entity adder is
     );
 
     port(
-        a, b : in  UNSIGNED(SIZE - 1 downto 0); --!< Vetores de entrada com 8 bits >
-        s    : out UNSIGNED(SIZE - 1 downto 0) --!< Vetor de saída com 8 bits >
+        a, b : in  UNSIGNED(SIZE - 1 downto 0); --!< Vetores de entrada com *SIZE* bits >
+        s    : out UNSIGNED(SIZE - 1 downto 0) --!< Vetor de saída com *SIZE* bits >
     );
 end entity adder;
 
