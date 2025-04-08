@@ -1,5 +1,5 @@
 --!
---! @file main.cpp
+--! @file adder.vhdl
 --! @author Emanuel S Araldi
 --! @brief Adds two 8-bit numbers together
 --! @version 0.2
@@ -23,7 +23,7 @@ use ieee.numeric_std.all;
 
 entity adder is
     generic(
-        SIZE : INTEGER := 8             --!< Tamanho definido aqui para facilitar futuras alterações >
+        SIZE : INTEGER := 16            --!< Tamanho definido aqui para facilitar futuras alterações >
     );
 
     port(
