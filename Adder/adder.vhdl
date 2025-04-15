@@ -16,9 +16,9 @@ use ieee.numeric_std.all;
 --!
 --! @param SIZE     GENERIC constant, in/output size
 --!
---! @param a        *SIZE*-bit Input, unsigned number
---! @param b        *SIZE*-bit Input, unsigned number
---! @param s        *SIZE*-bit Output, unsigned number equals a+b
+--! @param dataa    *SIZE*-bit Input, unsigned number
+--! @param datab    *SIZE*-bit Input, unsigned number
+--! @param sum      *SIZE*-bit Output, unsigned number equals a+b
 --!
 
 entity adder is
@@ -27,14 +27,14 @@ entity adder is
     );
 
     port(
-        a, b : in  UNSIGNED(SIZE - 1 downto 0); --!< Vetores de entrada com *SIZE* bits >
-        s    : out UNSIGNED(SIZE - 1 downto 0) --!< Vetor de saída com *SIZE* bits >
+        dataa, datab    : in  UNSIGNED(SIZE - 1 downto 0); --!< Vetores de entrada com *SIZE* bits >
+        sum             : out UNSIGNED(SIZE - 1 downto 0) --!< Vetor de saída com *SIZE* bits >
     );
 end entity adder;
 
 architecture math of adder is
 
 begin
-    s <= a + b;
+    sum <= dataa + datab;
 
 end architecture math;
