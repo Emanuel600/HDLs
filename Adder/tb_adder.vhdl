@@ -1,7 +1,7 @@
 --!
 --! @file adder.vhdl
 --! @author Emanuel S Araldi
---! @brief Adds two 8-bit numbers together
+--! @brief Adds two n-bit numbers together
 --! @version 0.2
 --! @date 2025-04-15
 --!
@@ -22,9 +22,6 @@ use ieee.numeric_std.all;
 --!
 
 entity testbench_adder is
-    generic(
-        SIZE : INTEGER := 16            --!< Tamanho definido aqui para facilitar futuras alterações >
-    );
 end entity testbench_adder;
 
 --! @brief          Arquitetura de teste, executa um processo para verificar saída
@@ -33,22 +30,37 @@ end entity testbench_adder;
 --! @param datab_tb (in)  Uma das variáveis a serem somadas
 --! @param sum_tb   (out) Soma de dataa e datab
 architecture stimulus of testbench_adder is
+    constant N : integer := 16;
 
-    signal dataa_tb : UNSIGNED(SIZE - 1 downto 0) := to_unsigned(0, SIZE);
-    signal datab_tb : UNSIGNED(SIZE - 1 downto 0) := to_unsigned(0, SIZE);
-    signal sum_tb   : UNSIGNED(SIZE - 1 downto 0) := to_unsigned(0, SIZE);
+    signal dataa_tb : UNSIGNED(N - 1 downto 0) := to_unsigned(0, N);
+    signal datab_tb : UNSIGNED(N - 1 downto 0) := to_unsigned(0, N);
+    signal sum_tb   : UNSIGNED(N - 1 downto 0) := to_unsigned(0, N);
 
 begin
-    process
+    dut : entity work.adder
+        generic map(
+            SIZE => N
+        )
+        port map(
+            dataa => dataa_tb,
+            datab => datab_tb,
+            sum   => sum_tb
+        );
+
+    data : process                      --! Update dataa_tb
     begin
-        for i in 20 to 30 loop
-            dataa_tb <= to_unsigned(i, SIZE);
-            for j in 15 to 20 loop
-                datab_tb <= to_unsigned(20 - j, SIZE);
-                wait for 0 ns;          --< 'sum_tb' updates next cycle otherwise
-                sum_tb   <= dataa_tb + datab_tb;
-                wait for 50 ns;
-            end loop;
+        for i in 5 to 20 loop
+            dataa_tb <= to_unsigned(i, N);
+            wait for 25 ns;
         end loop;
-    end process;
+    end process data;
+
+    datb : process                      --! Update datab_tb
+    begin
+        for i in 5 to 20 loop
+            datab_tb <= to_unsigned(15 - i, N);
+            wait for 35 ns;
+        end loop;
+    end process datb;
+
 end architecture stimulus;
