@@ -12,28 +12,29 @@ library ieee;
 use ieee.std_logic_1164.all;
 use ieee.numeric_std.all;
 
+--! @brief Handles Control Logic for an 8x8 Multiplier
 entity mult_control is
     port(
         --- Inputs ---
-        clk     : in std_logic;
-        reset_a : in std_logic;
-        start   : in std_logic;
-        count   : in unsigned(1 downto 0);
+        clk       : in  std_logic;      --! Clock
+        reset_a   : in  std_logic;      --! Reset State Machine
+        start     : in  std_logic;      --! Starts Multiplication
+        count     : in  unsigned(1 downto 0); --! Counts Clockcycles since beggining
         --- Outputs ---
-        input_sel   : out std_logic_vector(1 downto 0);
-        shift_sel   : out unsigned(1 downto 0);
-        state_out   : out unsigned(2 downto 0);
-        done        : out std_logic;
-        clk_ena     : out std_logic;
-        sclr_n      : out std_logic
+        input_sel : out std_logic_vector(1 downto 0); --! Selects 'high' or 'low' bits on mux
+        shift_sel : out std_logic_vector(1 downto 0); --! Selects how many bits to shift
+        state_out : out unsigned(2 downto 0); --! Outputs state (DEBUG)
+        done      : out std_logic;      --! Flags end of operation
+        clk_ena   : out std_logic;      --! Enables Clock for other components
+        sclr_n    : out std_logic       --! Clears Output Register
     );
 end entity mult_control;
 
 architecture RTL of mult_control is
     type stateType is (IDLE, LSB, MID, MSB, CALC_DONE, ERR);
-    signal state : stateType;
+    signal state : stateType;           --! Step of Multiplication
 begin
-    st: process(clk) is -- Handle State Transition
+    st : process(clk) is                --! Handle State Transition
     begin
         if rising_edge(clk) then
             if reset_a = '1' then
@@ -41,39 +42,27 @@ begin
             else
                 case state is
                     when IDLE =>
-                        done    <= '0';
-                        clk_ena <= '0';
-                        sclr_n  <= '1';
-                        if start='1' then
+                        if start = '1' then
                             state <= LSB;
                         elsif start = '0' then
                             state <= IDLE;
                         end if;
                     when LSB =>
-                        done    <= '0';
-                        clk_ena <= '1';
-                        sclr_n  <= '0';
-                        if start='0' and count = "00" then
+                        if start = '0' and count = "00" then
                             state <= MID;
                         else
                             state <= ERR;
                         end if;
                     when MID =>
-                        done    <= '0';
-                        clk_ena <= '1';
-                        sclr_n  <= '1';
-                        if start='0' and count = "01" then
+                        if start = '0' and count = "01" then
                             state <= MID;
-                        elsif start='0' and count ="10" then
+                        elsif start = '0' and count = "10" then
                             state <= MSB;
                         else
                             state <= ERR;
                         end if;
                     when MSB =>
-                        done    <= '0';
-                        clk_ena <= '1';
-                        sclr_n  <= '1';
-                        if start='0' and count="11" then
+                        if start = '0' and count = "11" then
                             state <= CALC_DONE;
                         else
                             state <= ERR;
@@ -95,53 +84,26 @@ begin
         end if;
     end process;
 
-    mux_sel: process(state) -- Mux Control - Selects Either High or Low Bits on 'dataa' and 'datab'
+    ctl : process(state, count)         --! Control Logic
     begin
-        case state is
-            when IDLE =>
-                null;
-            when LSB =>
-                input_sel <= "00"; -- Low 'a' and 'b'
-            when MID =>
-                input_sel <= "01"; -- Low 'a' and High 'b'
-            when MSB =>
-                input_sel <= "10"; -- High 'a' and Low 'b'
-            when CALC_DONE =>
-                input_sel <= "11"; -- High 'a' and 'b'
-            when ERR =>
-                null;
-        end case;
-    end process;
-
-    sft_sel: process(state) -- Shift Control, Shifts by 0, 4 or 8 bits
-    begin
-        case state is
-            when IDLE =>
-                null;
-            when LSB =>
-                shift_sel <= "00"; -- No shift
-            when MID =>
-                shift_sel <= "01"; -- Shift 4
-            when MSB =>
-                shift_sel <= "01"; -- Shift 4
-            when CALC_DONE =>
-                shift_sel <= "10"; -- Shift 8
-            when ERR =>
-                null;
-        end case;
-    end process;
-
-    sto: process(state) -- Output
-    begin
+        input_sel <= "00";
+        shift_sel <= "00";
         case state is
             when IDLE =>
                 null;
             when LSB =>
                 null;
             when MID =>
-                null;
+                if count = "01" then
+                    input_sel <= "01";  -- Low 'a' and High 'b'
+                    shift_sel <= "01";  -- Shift 4 bits
+                else
+                    input_sel <= "10";  -- High 'a' and Low 'b'
+                    shift_sel <= "01";  -- Shift 4 bits
+                end if;
             when MSB =>
-                null;
+                input_sel <= "11";      -- High 'a' and 'b'
+                shift_sel <= "10";      -- Shift 8 bits
             when CALC_DONE =>
                 null;
             when ERR =>
@@ -149,21 +111,39 @@ begin
         end case;
     end process;
 
-    don: process(state) -- Done Flag
+    sto : process(state)                --! Output Logic
     begin
         case state is
             when IDLE =>
-                null;
+                done      <= '0';
+                clk_ena   <= '0';
+                sclr_n    <= '1';
+                state_out <= to_unsigned(0, 3);
             when LSB =>
-                null;
+                done      <= '0';
+                clk_ena   <= '1';
+                sclr_n    <= '0';
+                state_out <= to_unsigned(1, 3);
             when MID =>
-                null;
+                done      <= '0';
+                clk_ena   <= '1';
+                sclr_n    <= '1';
+                state_out <= to_unsigned(2, 3);
             when MSB =>
-                null;
+                done      <= '0';
+                clk_ena   <= '1';
+                sclr_n    <= '1';
+                state_out <= to_unsigned(3, 3);
             when CALC_DONE =>
-                null;
+                done      <= '1';
+                clk_ena   <= '1';
+                sclr_n    <= '1';
+                state_out <= to_unsigned(4, 3);
             when ERR =>
-                null;
+                done      <= '0';
+                clk_ena   <= '0';
+                sclr_n    <= '1';
+                state_out <= to_unsigned(5, 3);
         end case;
     end process;
 

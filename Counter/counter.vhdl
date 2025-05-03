@@ -25,7 +25,7 @@ architecture RTL of counter is
 begin
     process(clk, aclr_n)
     begin
-        if aclr_n = '1' then
+        if aclr_n = '0' then
             counter <= "00";
         elsif rising_edge(clk) then
             counter <= counter + 1;
