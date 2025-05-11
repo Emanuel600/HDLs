@@ -27,8 +27,8 @@ entity adder is
     );
 
     port(
-        dataa, datab    : in  UNSIGNED(SIZE - 1 downto 0); --!< Vetores de entrada com *SIZE* bits >
-        sum             : out UNSIGNED(SIZE - 1 downto 0) --!< Vetor de saída com *SIZE* bits >
+        dataa, datab : in  UNSIGNED(SIZE - 1 downto 0); --!< Vetores de entrada com *SIZE* bits >
+        sum          : out UNSIGNED(SIZE - 1 downto 0) --!< Vetor de saída com *SIZE* bits >
     );
 end entity adder;
 

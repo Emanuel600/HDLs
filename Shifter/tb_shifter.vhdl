@@ -2,7 +2,7 @@
 --! @file tb_shifter.vhdl
 --! @author Emanuel S Araldi
 --! @brief Simple testbench for an n bit shifter
---! @version 0.2
+--! @version 0.3
 --! @date 2025-04-15
 --!
 --! @copyright Copyright (c) 2025
@@ -20,8 +20,8 @@ architecture Stimulus of tb_shifter is
     constant N : integer := 8;
 
     signal input_tb       : unsigned(N - 1 downto 0);
-    signal shift_cntrl_tb : unsigned(1 downto 0);
-    signal shift_out_tb   : unsigned(2 * N downto 0);
+    signal shift_cntrl_tb : std_logic_vector(1 downto 0);
+    signal shift_out_tb   : unsigned(2 * N-1 downto 0);
 
 begin
 
@@ -46,7 +46,7 @@ begin
     ctl : process                       --! Process to change control
     begin
         for i in 0 to 3 loop
-            shift_cntrl_tb <= to_unsigned(i, 2);
+            shift_cntrl_tb <= std_logic_vector(to_unsigned(i, 2));
             wait for 10 ns;
         end loop;
     end process;
