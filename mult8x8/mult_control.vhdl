@@ -82,16 +82,25 @@ begin
         end if;
     end process;
 
-    ctl : process(state, count)         --! Control Logic
+    ctl : process(state, count)         --! Control Logic And Ouput
     begin
         input_sel <= "00";
         shift_sel <= "00";
+        done      <= '0';
+        clk_ena   <= '0';
+        sclr_n    <= '1';
+
         case state is
             when IDLE =>
                 null;
             when LSB =>
-                null;
+                done      <= '0';
+                clk_ena   <= '1';
+                sclr_n    <= '1';
             when MID =>
+                done      <= '0';
+                clk_ena   <= '1';
+                sclr_n    <= '1';
                 if count = "01" then
                     input_sel <= "01";  -- Low 'a' and High 'b'
                     shift_sel <= "01";  -- Shift 4 bits
@@ -100,47 +109,36 @@ begin
                     shift_sel <= "01";  -- Shift 4 bits
                 end if;
             when MSB =>
+                done      <= '0';
+                clk_ena   <= '1';
+                sclr_n    <= '1';
                 input_sel <= "11";      -- High 'a' and 'b'
                 shift_sel <= "10";      -- Shift 8 bits
-            when CALC_DONE =>
-                null;
-            when ERR =>
-                null;
-        end case;
-    end process;
-
-    sto : process(state)                --! Output Logic
-    begin
-        case state is
-            when IDLE =>
-                done      <= '0';
-                clk_ena   <= '0';
-                sclr_n    <= '1';
-                state_out <= to_unsigned(0, 3);
-            when LSB =>
-                done      <= '0';
-                clk_ena   <= '1';
-                sclr_n    <= '1';
-                state_out <= to_unsigned(1, 3);
-            when MID =>
-                done      <= '0';
-                clk_ena   <= '1';
-                sclr_n    <= '1';
-                state_out <= to_unsigned(2, 3);
-            when MSB =>
-                done      <= '0';
-                clk_ena   <= '1';
-                sclr_n    <= '0';
-                state_out <= to_unsigned(3, 3);
             when CALC_DONE =>
                 done      <= '1';
                 clk_ena   <= '1';
                 sclr_n    <= '0';
-                state_out <= to_unsigned(4, 3);
             when ERR =>
                 done      <= '0';
                 clk_ena   <= '0';
                 sclr_n    <= '1';
+        end case;
+    end process;
+
+    sto : process(state)                --! State Out, Moore process
+    begin
+        case state is
+            when IDLE =>
+                state_out <= to_unsigned(0, 3);
+            when LSB =>
+                state_out <= to_unsigned(1, 3);
+            when MID =>
+                state_out <= to_unsigned(2, 3);
+            when MSB =>
+                state_out <= to_unsigned(3, 3);
+            when CALC_DONE =>
+                state_out <= to_unsigned(4, 3);
+            when ERR =>
                 state_out <= to_unsigned(5, 3);
         end case;
     end process;
