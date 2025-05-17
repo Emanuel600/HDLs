@@ -1,6 +1,27 @@
+--!
+--! @file mult_8x8.vhdl
+--! @author Emanuel S Araldi
+--! @brief Multiplies two 8-bit numbers together
+--! @version 1.1
+--! @date 2025-05-17
+--!
+--! @copyright Copyright (c) 2025
+--!
+-- Standard Libraries
 library ieee;
 use ieee.std_logic_1164.all;
 use ieee.numeric_std.all;
+-- Project LIbraries
+library work;
+use work.Adder.adder.all
+use work.Counter.counter.all
+use work.Mult.mult.all
+use work.Mux.mux.all
+use work.Register.reg16.all
+use work.Seven_Seg.seven_segment_cntrl.all
+use work.Shifter.shifter.all
+use work.mult_control.mult_control.all
+
 
 entity mult8x8 is
     port(
