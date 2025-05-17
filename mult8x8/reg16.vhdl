@@ -27,7 +27,7 @@ architecture RTL of reg16 is
 begin
     process(clk, sclr_n)
     begin
-        if sclr_n = '1' then
+        if sclr_n = '0' then
             reg_out <= to_unsigned(0, 16);
         elsif rising_edge(clk) then
             if clk_ena = '1' then
