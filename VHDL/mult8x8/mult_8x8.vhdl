@@ -64,87 +64,11 @@ architecture RTL of mult8x8 is
     signal product8x8 : unsigned(15 downto 0);
     signal sum        : unsigned(15 downto 0);
 
-    component mult
-        generic(SIZE : INTEGER := 4);
-        port(
-            dataa, datab : in  UNSIGNED(SIZE - 1 downto 0);
-            product      : out UNSIGNED(2 * SIZE - 1 downto 0)
-        );
-    end component mult;
-
-    component adder
-        generic(SIZE : INTEGER := 16);
-        port(
-            dataa, datab : in  UNSIGNED(SIZE - 1 downto 0);
-            sum          : out UNSIGNED(SIZE - 1 downto 0)
-        );
-    end component adder;
-
-    component counter
-        port(
-            clk       : in  std_logic;
-            aclr_n    : in  std_logic;
-            count_out : out unsigned(1 downto 0)
-        );
-    end component counter;
-
-    component mult_control
-        port(
-            clk       : in  std_logic;
-            reset_a   : in  std_logic;
-            start     : in  std_logic;
-            count     : in  unsigned(1 downto 0);
-            input_sel : out std_logic_vector(1 downto 0);
-            shift_sel : out std_logic_vector(1 downto 0);
-            state_out : out unsigned(2 downto 0);
-            done      : out std_logic;
-            clk_ena   : out std_logic;
-            sclr_n    : out std_logic
-        );
-    end component mult_control;
-
-    component mux
-        generic(
-            SIZE : INTEGER := 4
-        );
-        port(
-            mux_in_a, mux_in_b : in  UNSIGNED(SIZE - 1 downto 0);
-            mux_sel            : in  std_logic;
-            mux_out            : out UNSIGNED(SIZE - 1 downto 0)
-        );
-    end component mux;
-
-    component reg16
-        port(
-            clk     : in  std_logic;
-            sclr_n  : in  std_logic;
-            clk_ena : in  std_logic;
-            datain  : in  unsigned(15 downto 0);
-            reg_out : out unsigned(15 downto 0)
-        );
-    end component reg16;
-
-    component seven_segment_cntrl
-        port(
-            input : in  unsigned(3 downto 0);
-            segs  : out std_logic_vector(7 downto 0)
-        );
-    end component seven_segment_cntrl;
-
-    component shifter
-        generic(SIZE : INTEGER := 8);
-        port(
-            input       : in  unsigned(SIZE - 1 downto 0);
-            shift_cntrl : in  std_logic_vector(1 downto 0);
-            shift_out   : out unsigned(2 * SIZE - 1 downto 0)
-        );
-    end component shifter;
-
     signal not_start      : std_logic;
     signal state_out_wire : unsigned(3 downto 0);
 begin
 
-    mult44 : mult
+    mult44 : work.mult
         generic map(
             SIZE => 4
         )
@@ -154,7 +78,7 @@ begin
             product => product
         );
 
-    mux41 : mux
+    mux41 : work.mux
         generic map(
             SIZE => 4
         )
@@ -165,7 +89,7 @@ begin
             mux_out  => aout
         );
 
-    mux42 : mux
+    mux42 : work.mux
         generic map(
             SIZE => 4
         )
@@ -181,14 +105,14 @@ begin
         not_start <= not start;
     end process;
 
-    cntr : counter
+    cntr : work.counter
         port map(
             clk       => clk,
             aclr_n    => not_start,
             count_out => count
         );
 
-    ctrl : mult_control
+    ctrl : work.mult_control
         port map(
             clk       => clk,
             reset_a   => reset_a,
@@ -202,7 +126,7 @@ begin
             sclr_n    => sclr_n
         );
 
-    shft : shifter
+    shft : work.shifter
         generic map(
             SIZE => 8
         )
@@ -212,7 +136,7 @@ begin
             shift_out   => shift_out
         );
 
-    addr : adder
+    addr : work.adder
         generic map(
             SIZE => 16
         )
@@ -222,7 +146,7 @@ begin
             sum   => sum
         );
 
-    reg : reg16
+    reg : work.reg16
         port map(
             clk     => clk,
             sclr_n  => sclr_n,
@@ -236,7 +160,7 @@ begin
         state_out_wire <= "0" & state_out;
     end process;
 
-    sevseg : seven_segment_cntrl
+    sevseg : work.seven_segment_cntrl
         port map(
             input   => state_out_wire,
             segs(0) => seg_a,
