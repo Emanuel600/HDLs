@@ -8,7 +8,7 @@ end test_bench;
 architecture Test of test_bench is
     -- Inputs
     signal tb_clk            : std_logic;
-    signal tb_reset_a        : std_logic;
+    signal tb_reset_a        : std_logic := '0';
     signal tb_start          : std_logic;
     signal tb_dataa          : unsigned(7 downto 0);
     signal tb_datab          : unsigned(7 downto 0);
@@ -52,13 +52,13 @@ begin
         wait for 25 ns;
     end process;
 
-    rst : process
-    begin
-        tb_reset_a <= '0';
-        wait for 500 ns;
-        tb_reset_a <= '1';
-        wait for 12 ns;
-    end process;
+    -- rst : process
+    -- begin
+    --     tb_reset_a <= '0';
+    --     wait for 750 ns;
+    --     tb_reset_a <= '1';
+    --     wait for 12 ns;
+    -- end process;
 
     strt : process
     begin
@@ -72,18 +72,22 @@ begin
 
     data : process                      --! Update dataa_tb
     begin
-        for i in 5 to 20 loop
-            tb_dataa <= to_unsigned(32, 8);
-            wait for 250 ns;
-        end loop;
+        tb_dataa <= to_unsigned(32, 8);
+        wait for 425 ns;
+        tb_dataa <= to_unsigned(4, 8);
+        wait for 350 ns;
+        tb_dataa <= to_unsigned(42, 8);
+        wait for 350 ns;
     end process data;
 
     datb : process                      --! Update datab_tb
     begin
-        for i in 5 to 20 loop
-            tb_datab <= to_unsigned(32, 8);
-            wait for 250 ns;
-        end loop;
+        tb_datab <= to_unsigned(32, 8);
+        wait for 425 ns;
+        tb_datab <= to_unsigned(4, 8);
+        wait for 350 ns;
+        tb_datab <= to_unsigned(40, 8);
+        wait for 350 ns;
     end process datb;
 
 end architecture Test;

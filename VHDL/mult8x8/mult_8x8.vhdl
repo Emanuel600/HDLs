@@ -11,17 +11,15 @@
 library ieee;
 use ieee.std_logic_1164.all;
 use ieee.numeric_std.all;
--- Project LIbraries
-library work;
-use work.Adder.adder.all
-use work.Counter.counter.all
-use work.Mult.mult.all
-use work.Mux.mux.all
-use work.Register.reg16.all
-use work.Seven_Seg.seven_segment_cntrl.all
-use work.Shifter.shifter.all
-use work.mult_control.mult_control.all
-
+-- Project Libraries
+use work.adder;
+use work.counter;
+use work.mult;
+use work.mux;
+use work.reg16;
+use work.seven_segment_cntrl;
+use work.shifter;
+use work.mult_control;
 
 entity mult8x8 is
     port(
@@ -68,7 +66,7 @@ architecture RTL of mult8x8 is
     signal state_out_wire : unsigned(3 downto 0);
 begin
 
-    mult44 : work.mult
+    mult44 : entity mult
         generic map(
             SIZE => 4
         )
@@ -78,7 +76,7 @@ begin
             product => product
         );
 
-    mux41 : work.mux
+    mux41 : entity mux
         generic map(
             SIZE => 4
         )
@@ -89,7 +87,7 @@ begin
             mux_out  => aout
         );
 
-    mux42 : work.mux
+    mux42 : entity mux
         generic map(
             SIZE => 4
         )
@@ -105,14 +103,14 @@ begin
         not_start <= not start;
     end process;
 
-    cntr : work.counter
+    cntr : entity counter
         port map(
             clk       => clk,
             aclr_n    => not_start,
             count_out => count
         );
 
-    ctrl : work.mult_control
+    ctrl : entity mult_control
         port map(
             clk       => clk,
             reset_a   => reset_a,
@@ -126,7 +124,7 @@ begin
             sclr_n    => sclr_n
         );
 
-    shft : work.shifter
+    shft : entity shifter
         generic map(
             SIZE => 8
         )
@@ -136,7 +134,7 @@ begin
             shift_out   => shift_out
         );
 
-    addr : work.adder
+    addr : entity adder
         generic map(
             SIZE => 16
         )
@@ -146,7 +144,7 @@ begin
             sum   => sum
         );
 
-    reg : work.reg16
+    reg : entity reg16
         port map(
             clk     => clk,
             sclr_n  => sclr_n,
@@ -160,7 +158,7 @@ begin
         state_out_wire <= "0" & state_out;
     end process;
 
-    sevseg : work.seven_segment_cntrl
+    sevseg : entity seven_segment_cntrl
         port map(
             input   => state_out_wire,
             segs(0) => seg_a,
