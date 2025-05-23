@@ -82,15 +82,21 @@ begin
         end if;
     end process;
 
-    ctl : process(state, count)         --! Control Logic
+    ctl : process(state, count, start)         --! Control Logic
     begin
         input_sel <= "00";
         shift_sel <= "00";
         case state is
             when IDLE =>
-                done    <= '0';
-                clk_ena <= '0';
-                sclr_n  <= '1';
+		if start = '0' then
+                	done    <= '0';
+                	clk_ena <= '0';
+                	sclr_n  <= '1';
+		elsif start = '1' then
+                	done    <= '0';
+                	clk_ena <= '1';
+                	sclr_n  <= '0';
+		end if;
             when LSB =>
                 done    <= '0';
                 clk_ena <= '1';
