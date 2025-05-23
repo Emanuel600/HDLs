@@ -130,8 +130,8 @@ begin
                 end if;
             when MSB =>
 		if (start = '0') and (count = "11") then
-			input_sel <= "11"
-			shift_sel <= "10"
+			input_sel <= "11";
+			shift_sel <= "10";
                 	done      <= '0';
                 	clk_ena   <= '1';
                 	sclr_n    <= '1';
