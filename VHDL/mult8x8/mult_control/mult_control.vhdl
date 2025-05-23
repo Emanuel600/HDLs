@@ -98,34 +98,64 @@ begin
                 	sclr_n  <= '0';
 		end if;
             when LSB =>
-                done    <= '0';
-                clk_ena <= '1';
-                sclr_n  <= '0';
+		if (start='0') and (count="00") then
+        		input_sel <= "00";
+        		shift_sel <= "00";
+                	done    <= '0';
+                	clk_ena <= '1';
+                	sclr_n  <= '1';
+		else
+                	done    <= '0';
+                	clk_ena <= '1';
+                	sclr_n  <= '0';
+		end if;
             when MID =>
-                done    <= '0';
-                clk_ena <= '1';
-                sclr_n  <= '1';
-                if count = "01" then
-                    input_sel <= "01";  -- Low 'a' and High 'b'
-                    shift_sel <= "01";  -- Shift 4 bits
-                else
-                    input_sel <= "10";  -- High 'a' and Low 'b'
-                    shift_sel <= "01";  -- Shift 4 bits
+                if (start = '0') and (count = "01") then
+                    	input_sel <= "01";  -- Low 'a' and High 'b'
+                    	shift_sel <= "01";  -- Shift 4 bits
+                	done      <= '0';
+                	clk_ena   <= '1';
+                	sclr_n    <= '1';
+	    	elsif (start = '0') and (count = "10") then
+                    	input_sel <= "10";  -- High 'a' and Low 'b'
+                    	shift_sel <= "01";  -- Shift 4 bits
+                	done      <= '0';
+                	clk_ena   <= '1';
+                	sclr_n    <= '1';
+		else
+                	done      <= '0';
+                	clk_ena   <= '0';
+                	sclr_n    <= '1';
+
                 end if;
             when MSB =>
-                done      <= '0';
-                clk_ena   <= '1';
-                sclr_n    <= '1';
-                input_sel <= "11";      -- High 'a' and 'b'
-                shift_sel <= "10";      -- Shift 8 bits
+		if (start = '0') and (count = "11") then
+			input_sel <= "11"
+			shift_sel <= "10"
+                	done      <= '0';
+                	clk_ena   <= '1';
+                	sclr_n    <= '1';
+		else
+                	done      <= '0';
+                	clk_ena   <= '0';
+                	sclr_n    <= '1';
+		end if;
             when CALC_DONE =>
-                done    <= '1';
-                clk_ena <= '1';
-                sclr_n  <= '1';
+		if start = '0' then
+                	done      <= '1';
+                	clk_ena   <= '0';
+                	sclr_n    <= '1';
+		else
+                	done      <= '0';
+                	clk_ena   <= '0';
+                	sclr_n    <= '1';
+		end if;
             when ERR =>
-                done    <= '0';
-                clk_ena <= '0';
-                sclr_n  <= '1';
+		if start = '0' then
+                	done    <= '0';
+                	clk_ena <= '0';
+                	sclr_n  <= '1';
+		end if;
         end case;
     end process;
 
