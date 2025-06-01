@@ -1,0 +1,14 @@
+[libraries]
+lib.files=[
+	"*/*.vhdl"
+]
+lib.exclude = [
+	"*/test*"
+]
+
+fsm.files = [
+	"state_machine/*.vhdl"
+]
+counter.files = [
+	"counter/*.vhdl"
+]
