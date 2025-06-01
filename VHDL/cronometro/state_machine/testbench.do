@@ -30,7 +30,10 @@ add wave -divider -height 15 "Buttons"
 add wave -label "Reset" -radix binary /tb_in_ports.button.rst
 add wave -label "Start Stop" -radix binary /tb_in_ports.button.Start_Stop
 add wave -label "Store Partial" -radix binary /tb_in_ports.button.Store_Partial
-add wave -divider -height 15 "Button Register"
+add wave -divider -height 10 "Last Button"
+add wave -label "Start Stop" -radix binary /dut/last_button_states.Start_Stop
+add wave -label "Store Partial" -radix binary /dut/last_button_states.Store_Partial
+add wave -divider -height 10 "Button State"
 add wave -label "Start Stop" -radix binary /dut/button_states.Start_Stop
 add wave -label "Store Partial" -radix binary /dut/button_states.Store_Partial
 add wave -divider -height 15 "State"
@@ -40,7 +43,7 @@ add wave -label "Enable"  -radix binary /tb_out_ports.enable
 add wave -label "Partial" -radix binary /tb_out_ports.partial
 
 #Simula
-run 2ms
+run 8ms
 
 wave zoomfull
 write wave wave.ps

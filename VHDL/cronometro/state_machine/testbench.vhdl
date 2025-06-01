@@ -28,7 +28,7 @@ begin
     end process clk;
 
     tb_in_ports.button.rst <= '0';
-    tb_in_ports.button.Start_Stop <= '0', '1' after 400 us;
+    tb_in_ports.button.Start_Stop <= '0', '1' after 550 us, '0' after 3 ms;
     tb_in_ports.button.Store_Partial <= '0', '1' after 550 us;
 
 end architecture Test;

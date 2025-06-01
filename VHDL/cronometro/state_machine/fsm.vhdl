@@ -85,17 +85,17 @@ begin
     --! Input Handler
     button_update : process(in_ports.clk) is
     begin
-	if rising_edge(in_ports.clk) then
-	    if (in_ports.button.Start_Stop = '1' and last_button_states.Start_Stop = '0') then
-	        button_states.Start_Stop <= '1';
-	    elsif (in_ports.button.Store_Partial = '1' and last_button_states.Store_Partial = '0') then
-	        button_states.Store_Partial <= '1';
-	    else
-		button_states.Start_Stop <= '0';
-		button_states.Store_Partial <= '0';
-	    end if;
-	    last_button_states <= in_ports.button;
-	end if;
+        if rising_edge(in_ports.clk) then
+            if (in_ports.button.Start_Stop = '1' and last_button_states.Start_Stop = '0') then
+                button_states.Start_Stop <= '1';
+            elsif (in_ports.button.Store_Partial = '1' and last_button_states.Store_Partial = '0') then
+                button_states.Store_Partial <= '1';
+            else
+                button_states.Start_Stop <= '0';
+                button_states.Store_Partial <= '0';
+            end if;
+            last_button_states <= in_ports.button;
+        end if;
     end process;
 
 end architecture RTL;
