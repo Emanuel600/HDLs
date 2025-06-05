@@ -16,3 +16,7 @@ counter.files = [
 sev_seg.files = [
 	"seven_segment/*.vhdl"
 ]
+
+reg.files = [
+	"register/*.vhdl"
+]
