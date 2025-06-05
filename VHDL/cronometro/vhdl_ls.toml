@@ -12,3 +12,7 @@ fsm.files = [
 counter.files = [
 	"counter/*.vhdl"
 ]
+
+sev_seg.files = [
+	"seven_segment/*.vhdl"
+]

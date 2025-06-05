@@ -24,8 +24,13 @@ view wave
 # -label: nome da forma de onda
 
 # Com labels
-add wave -label "counter" -radix unsigned /count
-add wave -label "output"  -radix symbolic /sev_seg
+add wave -divider -height 20 "Counter"
+add wave -label "counter" -radix hex /count
+add wave -divider -height 20 "7 Seg"
+add wave -label "1st 7 Seg"  -radix symbolic /sev_seg0
+add wave -label "2nd 7 Seg"  -radix symbolic /sev_seg1
+add wave -label "3rd 7 Seg"  -radix symbolic /sev_seg2
+add wave -label "4th 7 Seg"  -radix symbolic /sev_seg3
 
 #Simula
 run 20 us

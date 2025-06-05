@@ -10,20 +10,23 @@ end test_bench;
 
 architecture Test of test_bench is
 
-    signal count : unsigned(3 downto 0) := "1111";
-    signal sev_seg : seven_seg;
+    signal count : unsigned(15 downto 0) := "0000000000000000";
+    signal sev_seg0 : seven_seg;
+    signal sev_seg1 : seven_seg;
+    signal sev_seg2 : seven_seg;
+    signal sev_seg3 : seven_seg;
 
 begin
 
     incr : process
     begin
-        count <= count + 1;
+        count <= count + x"1A21";
         wait for 500 ns;
     end process;
 
     conv : process(count)
     begin
-        sev_seg <= to_seven_segment(count);
+        (sev_seg0, sev_seg1, sev_seg2, sev_seg3) <= register_to_seven_segment(count);
     end process;
     
 end architecture Test;
