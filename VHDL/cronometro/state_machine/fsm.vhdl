@@ -64,7 +64,7 @@ begin
     end process;
 
     --! Mealy process
-    mealy : process(state, in_ports.button.Store_Partial) is
+    mealy : process(state, button_states.Store_Partial) is
     begin
         case state is
             when nill =>
