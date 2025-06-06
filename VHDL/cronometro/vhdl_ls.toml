@@ -20,3 +20,9 @@ sev_seg.files = [
 reg.files = [
 	"register/*.vhdl"
 ]
+
+timer.files = [
+	"timer/*.vhdl",
+	"state_machine/*.vhdl"
+]
+
