@@ -19,9 +19,10 @@ architecture RTL of fsm is
     --! @brief	Controls wether the counter is null, counting or stopped
     --!
     --! nill	Stopped
-    --! count	Counting
+    --! count	Counting (Shows absolute count)
+    --! partial	Shows partial count
     --! stop	Stopped
-    type stateType is (nill, count, stop);
+    type stateType is (nill, count, partial, stop);
     signal state : stateType;
 
     signal button_states : Buttons := ('0', '0', '0');		--! Current button state = (in_buttons and (not late_buttons))
@@ -43,6 +44,8 @@ begin
                 when count =>
                     if button_states.Start_Stop = '1' then
                         state <= stop;
+		    elsif button_states.Store_Partial = '1' then
+			state <= partial;
                     end if;
                 when stop =>
                     state <= nill;
@@ -55,30 +58,17 @@ begin
     begin
         case state is
             when nill =>
+		out_ports.partial <= '0';
                 out_ports.enable <= '0';
             when count =>
+		out_ports.partial <= '0';
                 out_ports.enable <= '1';
-            when stop =>
+	    when partial =>
+		out_ports.partial <= '1';
                 out_ports.enable <= '0';
-        end case;
-    end process;
-
-    --! Mealy process
-    mealy : process(state, button_states.Store_Partial) is
-    begin
-        case state is
-            when nill =>
-                out_ports.partial <= '0';
-            when count =>
-                out_ports.partial <= '0';
-                if button_states.Store_Partial = '1' then
-                    out_ports.partial <= '1';
-                end if;
             when stop =>
-                out_ports.partial <= '0';
-                if button_states.Store_Partial = '1' then
-                    out_ports.partial <= '1';
-                end if;
+		out_ports.partial <= '0';
+                out_ports.enable <= '0';
         end case;
     end process;
 

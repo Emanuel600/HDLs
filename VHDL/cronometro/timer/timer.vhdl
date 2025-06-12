@@ -9,8 +9,7 @@ entity timer is
         clk : in std_logic; --! Clock 1 kHz
         rst : in std_logic; --! Async Reset
         FSM : in FSM_Out_Ports; --! Clock enable and store partial signal
-        absolute : out unsigned(15 downto 0) := x"0000"; --! Absolute time
-        partial : out unsigned(15 downto 0) := x"0000" --! Partial time
+        time_out : out unsigned(15 downto 0) := x"0000" --! Time that gets sent to register
     );
 end entity timer;
 
@@ -34,15 +33,18 @@ begin
     begin
         if rst = '1' then
             partial_signal <= x"0000";
-        elsif FSM.partial = '1' then
+        elsif rising_edge(FSM.partial) then
             partial_signal <= absolute_signal - partial_signal;
         end if;
     end process;
 
     assign : process(absolute_signal, partial_signal) is
     begin
-        absolute <= absolute_signal;
-        partial  <= partial_signal;
+	if FSM.partial = '0' then
+            time_out <= absolute_signal;
+	else
+	    time_out  <= partial_signal;
+	end if;
     end process;
     
 end architecture RTL;
