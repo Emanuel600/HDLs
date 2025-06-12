@@ -26,3 +26,9 @@ timer.files = [
 	"state_machine/*.vhdl"
 ]
 
+main.file = [
+	"*.vhdl",
+	"state_machine/*.vhdl",
+	"seven_segment/*.vhdl"
+]
+

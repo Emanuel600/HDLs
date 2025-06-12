@@ -33,13 +33,15 @@ add wave -divider -height 30 "< Input Ports >"
 add wave -label "Clock"  -radix binary  /dut/clk_1k
 add wave -divider -height 15 "Buttons"
 add wave -label "Reset" -radix binary /tb_buttons.rst
-add wave -label "Start Stop" -radix binary /tb_buttons.Start_Stop
-add wave -label "Store Partial" -radix binary /tb_buttons.Store_Partial
+add wave -label "Start Stop" -radix binary /dut/state_machine/button_states.Start_Stop
+add wave -label "Store Partial" -radix binary /dut/state_machine/button_states.Store_Partial
 add wave -divider -height 30 "State"
 add wave -label "State" /dut/state_machine/state
-add wave -divide -height 30 "< Internal Count >"
-add wave -label "Absolute"  -radix hex /dut/timer_e/absolute
-add wave -label "Partial" -radix hex /dut/timer_e/partial
+add wave -divide -height 30 "< Internal Count Signals >"
+add wave -label "Absolute"  -radix hex /dut/timer_e/absolute_signal
+add wave -label "Partial" -radix hex /dut/timer_e/partial_signal
+add wave -divide -height 30 "< Saída para o Registrador >"
+add wave -labe "Saída" -radix hex /dut/reg/reg_out
 
 #Simula
 run 8ms

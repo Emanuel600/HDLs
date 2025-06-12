@@ -12,16 +12,14 @@ architecture Test of test_bench is
     signal tb_clk : std_logic;
     signal tb_buttons : data_structs.Buttons;
     signal tb_enable : std_logic := '1';
-    signal tb_sev_seg_reg1 : seven_segment.reg_seven_seg;
-    signal tb_sev_seg_reg2 : seven_segment.reg_seven_seg;
+    signal tb_sev_seg_reg : seven_segment.reg_seven_seg;
 begin
     dut : entity work.cronometro
         port map(
             clk          => tb_clk,
             buttons      => tb_buttons,
             enable       => tb_enable,
-            sev_seg_reg1 => tb_sev_seg_reg1,
-            sev_seg_reg2 => tb_sev_seg_reg2
+            sev_seg_reg => tb_sev_seg_reg
         );
 
     clk: process

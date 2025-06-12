@@ -7,7 +7,7 @@ use work.data_structs.all;
 entity fsm is
     port(
         --! Input
-    	in_ports : in FSM_In_Ports;
+        in_ports : in FSM_In_Ports;
         --! Output
     	out_ports : out FSM_Out_Ports
     );
@@ -44,11 +44,19 @@ begin
                 when count =>
                     if button_states.Start_Stop = '1' then
                         state <= stop;
-		    elsif button_states.Store_Partial = '1' then
-			state <= partial;
+		            elsif button_states.Store_Partial = '1' then
+			            state <= partial;
+                    end if;
+                when partial =>
+                    if button_states.Start_Stop = '1' then
+                        state <= stop;
                     end if;
                 when stop =>
-                    state <= nill;
+                    if button_states.Start_Stop = '1' then
+                        state <= count;
+                    elsif button_states.Store_Partial = '1' then
+                        state <= partial;
+                    end if;
             end case;
         end if;
     end process;
@@ -58,16 +66,16 @@ begin
     begin
         case state is
             when nill =>
-		out_ports.partial <= '0';
+		        out_ports.partial <= '0';
                 out_ports.enable <= '0';
             when count =>
-		out_ports.partial <= '0';
+		        out_ports.partial <= '0';
                 out_ports.enable <= '1';
 	    when partial =>
-		out_ports.partial <= '1';
+		        out_ports.partial <= '1';
                 out_ports.enable <= '0';
             when stop =>
-		out_ports.partial <= '0';
+		        out_ports.partial <= '0';
                 out_ports.enable <= '0';
         end case;
     end process;

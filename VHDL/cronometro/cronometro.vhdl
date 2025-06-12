@@ -15,19 +15,15 @@ entity cronometro is
         buttons : in data_structs.Buttons; --> Input buttons
         enable : in std_logic; --> Enable clock divider
         -- Output from first register
-        sev_seg_reg1 : out seven_segment.reg_seven_seg;
-        -- Output from second register
-        sev_seg_reg2 : out seven_segment.reg_seven_seg
+        sev_seg_reg : out seven_segment.reg_seven_seg
     );
 end entity cronometro;
 
 architecture RTL of cronometro is
     signal clk_1k   : std_logic; -- 1 KHz clock
     signal fsm_ctl  : data_structs.FSM_Out_Ports; -- FSM control signal
-    signal partial  : unsigned(15 downto 0);
-    signal absolute : unsigned(15 downto 0);
-    signal partial_out  : unsigned(15 downto 0);
-    signal absolute_out : unsigned(15 downto 0);
+    signal reg_out  : unsigned(15 downto 0);
+    signal time_out : unsigned(15 downto 0);
 begin
     clk_divider : entity work.counter
         generic map(
@@ -53,32 +49,21 @@ begin
             clk      => clk_1k,
             rst      => buttons.rst,
             FSM      => fsm_ctl,
-            absolute => absolute,
-            partial  => partial
+            time_out => time_out
         );
     
-    reg_abs : entity work.reg16
+    reg : entity work.reg16
         port map(
             clk     => clk,
             sclr_n  => buttons.rst,
             clk_ena => fsm_ctl.enable,
-            datain  => absolute,
-            reg_out => absolute_out
+            datain  => time_out,
+            reg_out => reg_out
         );
 
-    reg_part : entity work.reg16
-        port map(
-            clk     => clk,
-            sclr_n  => buttons.rst,
-            clk_ena => fsm_ctl.enable,
-            datain  => partial,
-            reg_out => partial_out
-        );
-
-    send_to_seven_seg : process(absolute_out, partial_out) is
+    send_to_seven_seg : process(reg_out) is
     begin
-        sev_seg_reg1 <= seven_segment.register_to_seven_segment(absolute_out);
-        sev_seg_reg2 <= seven_segment.register_to_seven_segment(partial_out);
+        sev_seg_reg <= seven_segment.register_to_seven_segment(reg_out);
     end process;
     
 
